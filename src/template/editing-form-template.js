@@ -1,6 +1,5 @@
 import { TYPE_OF_POINT } from '../const';
 import { makeKebabCase, isChecked, getFullDate } from '../utils';
-import dayjs from 'dayjs';
 
 function getPhotos(pictures) {
   const arr = [];
