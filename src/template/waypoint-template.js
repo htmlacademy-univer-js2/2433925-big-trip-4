@@ -1,29 +1,42 @@
-function createWaypointTemplate(){
+import { humanizeDate, getHourseAndMinutes, getTripDuration } from '../utils';
+
+function makeOffers(offers){
+  const offersMarkingArr = [];
+
+  for (const offer of offers){
+    const checkedOffer = `
+    <li class="event__offer">
+      <span class="event__offer-title">${offer.name}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`;
+    offersMarkingArr.push(checkedOffer);
+  }
+  return offersMarkingArr.join('');
+}
+
+function createWaypointTemplate(point){
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">MAR 18</time>
+    <time class="event__date" datetime="${point.startTime}">${humanizeDate(point.startTime)}</time>
     <div class="event__type">
-      <img class="event__type-icon" width="42" height="42" src="img/icons/check-in.png" alt="Event type icon">
+      <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">Check-in Chamonix</h3>
+    <h3 class="event__title">${point.type} ${point.city}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T12:25">16:20</time>
+        <time class="event__start-time" datetime="${point.startTime}">${getHourseAndMinutes(point.startTime)}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T13:35">17:00</time>
+        <time class="event__end-time" datetime="${point.finishTime}">${getHourseAndMinutes(point.finishTime)}</time>
       </p>
-      <p class="event__duration">40M</p>
+      <p class="event__duration">${getTripDuration(point.startTime, point.finishTime)}</p>
     </div>
     <p class="event__price">
-      &euro;&nbsp;<span class="event__price-value">600</span>
+      &euro;&nbsp;<span class="event__price-value">${point.price}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      <li class="event__offer">
-        <span class="event__offer-title">Add breakfast</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">50</span>
-      </li>
+      ${makeOffers(point.offers)}
     </ul>
     <button class="event__favorite-btn event__favorite-btn--active" type="button">
       <span class="visually-hidden">Add to favorite</span>
