@@ -1,7 +1,7 @@
+import Presenter from './presenter/presenter.js';
 import FiltersView from './view/filters.js';
 import TripNameView from './view/trip-name.js';
-import { render, RenderPosition} from './render.js';
-import Presenter from './presenter/presenter.js';
+import { render, RenderPosition } from './framework/render.js';
 import PointModel from './models/point-model.js';
 import OfferModel from './models/offer-model.js';
 

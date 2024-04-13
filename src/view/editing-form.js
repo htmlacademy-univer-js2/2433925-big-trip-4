@@ -1,43 +1,47 @@
 import {createEditingFormTemplate} from '../template/editing-form-template.js';
-import {createElement} from '../render.js';
-import { getRandomArrayElement, getRandomNumber } from '../utils';
-import { getDestination } from '../mock/destination';
-import { getOffer } from '../mock/offer';
-import { CITIES, TYPE_OF_POINT } from '../const';
-import dayjs from 'dayjs';
+import AbstractView from '../framework/view/abstract-view.js';
+import { getDestination } from '../mock/destination.js';
+import { getOffer } from '../mock/offer.js';
+import { getRandomNumber } from '../utils.js';
 
-export default class EditingFormView{
-  #element;
+const EMPTY_POINT = {
+  id: 1,
+  type: 'flight',
+  city: 'Moscow',
+  price: getRandomNumber(0, 1000),
+  startTime: '2024-04-10 04:40',
+  finishTime: '2024-04-10 04:40',
+  isFavorite: false,
+  offers: Array.from({length: getRandomNumber(1, 5)}, getOffer),
+  destination: getDestination()
+};
+
+export default class EditingFormView extends AbstractView{
   #point;
-  #defaultPoint = {
-    id: 1,
-    type: getRandomArrayElement(TYPE_OF_POINT),
-    city: getRandomArrayElement(CITIES),
-    price: getRandomNumber(100, 1500),
-    startTime: dayjs('2024-04-12 04:40',),
-    finishTime: dayjs('2024-04-12 09:50'),
-    isFavorite: false,
-    offers: Array.from({length: getRandomNumber(1, 5)}, getOffer),
-    destination: getDestination(),
-  };
+  #onSubmitClick;
+  #onResetClick;
 
-  constructor(point = this.#defaultPoint){
+  constructor({point = EMPTY_POINT, onSubmitClick, onResetClick}){
+    super();
     this.#point = point;
+    this.#onSubmitClick = onSubmitClick;
+    this.#onResetClick = onResetClick;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetButtonClickHandler);
   }
 
   get template(){
     return createEditingFormTemplate(this.#point);
   }
 
-  get element(){
-    if (!this.#element){
-      this.#element = createElement(this.template);
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#onSubmitClick();
+  };
 
-    return this.#element;
-  }
-
-  removeElement(){
-    this.#element = null;
-  }
+  #resetButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onResetClick();
+  };
 }
