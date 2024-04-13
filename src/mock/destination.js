@@ -8,7 +8,7 @@ function getDestination(){
     id: destinationId(),
     photo: Array.from({length: getRandomNumber(1, 5)}, genRandomPicture),
     description: getRandomArrayElement(DESCRIPTION),
-    name: getRandomArrayElement(CITIES)
+    name: getRandomArrayElement(CITIES),
   };
 }
 
