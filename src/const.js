@@ -49,17 +49,17 @@ const DESCRIPTION = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-const DATES = [
-  '2024-04-10 04:40',
-  '2024-04-10 03:40',
-  '2024-04-09 14:45',
-  '2024-04-10 17:20',
-  '2024-04-05 09:15',
-  '2024-04-05 09:40',
-  '2024-04-10 07:25',
-  '2024-04-10 12:30',
-  '2024-04-12 04:40',
-  '2024-04-12 09:50'
-];
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past'
+};
 
-export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, DATES};
+const DURATION = {
+  HOUR: 5,
+  DAY: 5,
+  MIN: 59
+};
+
+export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION};

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { FilterType, DURATION } from './const';
 
 function getRandomNumber(min, max) {
   const lower = Math.ceil(Math.min(max, min));
@@ -7,7 +8,7 @@ function getRandomNumber(min, max) {
   return Math.floor(result);
 }
 
-function getRandomArrayElement (items) {
+function getRandomArrayElement(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
@@ -19,19 +20,19 @@ function createIdGenerator() {
   };
 }
 
-function humanizeDate(date){
+function humanizeDate(date) {
   return date ? dayjs(date).format('MMM DD') : '';
 }
 
-function getFullDate(date){
+function getFullDate(date) {
   return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
 }
 
-function getHourseAndMinutes(date){
+function getHourseAndMinutes(date) {
   return date ? dayjs(date).format('HH:mm') : '';
 }
 
-function getDay(date){
+function getDay(date) {
   return date ? dayjs(date).format('DD') : '';
 }
 
@@ -54,7 +55,7 @@ function getTripDuration(startDate, finishDate) {
   }
 }
 
-function genRandomPicture () {
+function genRandomPicture() {
   return `https://loremflickr.com/248/152?random=${getRandomNumber(1, 1000)}`;
 }
 
@@ -68,4 +69,44 @@ function isChecked(int) {
   return (int === 1) ? 'checked' : '';
 }
 
-export {isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, getHourseAndMinutes, getDay, getTripDuration, genRandomPicture };
+function isPointFuture(point) {
+  return dayjs().isBefore(point.dateFrom);
+}
+
+function isPointPresent(point) {
+  return (dayjs().isAfter(point.dateFrom) && dayjs().isBefore(point.dateTo));
+}
+
+function isPointPast(point) {
+  return dayjs().isAfter(point.dateTo);
+}
+
+const filter = {
+  [FilterType.EVERYTHING]: (points) => [...points],
+  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
+  [FilterType.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
+  [FilterType.PAST]: (points) => points.filter((point) => isPointPast(point))
+};
+
+let dateTime = dayjs().subtract(getRandomNumber(0, DURATION.DAY), 'day').toDate();
+
+function getDate({ next }) {
+  const minsGap = getRandomNumber(0, DURATION.MIN);
+  const hoursGap = getRandomNumber(1, DURATION.HOUR);
+  const daysGap = getRandomNumber(0, DURATION.DAY);
+
+  if (next) {
+    dateTime = dayjs(dateTime)
+      .add(minsGap, 'minute')
+      .add(hoursGap, 'hour')
+      .add(daysGap, 'day')
+      .toDate();
+  }
+
+  return dateTime;
+}
+
+export {
+  isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate,
+  getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate
+};

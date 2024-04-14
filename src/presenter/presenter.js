@@ -2,6 +2,7 @@ import SortView from '../view/sort.js';
 import CreationFormView from '../view/creation-form.js';
 import EditingFormView from '../view/editing-form.js';
 import WaypointView from '../view/waypoint.js';
+import EmptyListView from '../view/empty-list.js';
 import { render, RenderPosition, replace } from '../framework/render.js';
 
 export default class Presenter {
@@ -20,6 +21,10 @@ export default class Presenter {
   }
 
   init() {
+    if (this.#points.length === 0){
+      render(new EmptyListView(),this.#container);
+    }
+
     render(this.#sort, this.#container, RenderPosition.AFTERBEGIN);
     render(this.#creationFormView, this.#container);
 
