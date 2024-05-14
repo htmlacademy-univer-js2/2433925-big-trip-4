@@ -20,15 +20,17 @@ export default class EditingFormView extends AbstractView{
   #point;
   #onSubmitClick;
   #onResetClick;
+  #onFormSave;
 
-  constructor({point = EMPTY_POINT, onSubmitClick, onResetClick}){
+  constructor({point = EMPTY_POINT, onSubmitClick, onResetClick, onFormSave}){
     super();
     this.#point = point;
     this.#onSubmitClick = onSubmitClick;
     this.#onResetClick = onResetClick;
+    this.#onFormSave = onFormSave;
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetButtonClickHandler);
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#formSaveHandler);
   }
 
   get template(){
@@ -37,11 +39,16 @@ export default class EditingFormView extends AbstractView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onSubmitClick();
+    this.#onSubmitClick(this.#point);
   };
 
   #resetButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#onResetClick();
+  };
+
+  #formSaveHandler = (evt) => {
+    evt.preventDefault();
+    this.#onFormSave();
   };
 }

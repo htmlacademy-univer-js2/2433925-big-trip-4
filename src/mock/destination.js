@@ -1,11 +1,10 @@
-import { createIdGenerator, getRandomArrayElement, getRandomNumber, genRandomPicture } from '../utils';
+import { getRandomArrayElement, getRandomNumber, genRandomPicture } from '../utils';
 import { CITIES, DESCRIPTION } from '../const';
-
-const destinationId = createIdGenerator();
+import { nanoid } from 'nanoid';
 
 function getDestination(){
   return {
-    id: destinationId(),
+    id: nanoid(),
     photo: Array.from({length: getRandomNumber(1, 5)}, genRandomPicture),
     description: getRandomArrayElement(DESCRIPTION),
     name: getRandomArrayElement(CITIES),
