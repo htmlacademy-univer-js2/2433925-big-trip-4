@@ -1,13 +1,12 @@
-import { getRandomArrayElement, createIdGenerator, getRandomNumber, getDate } from '../utils';
+import { getRandomArrayElement, getRandomNumber, getDate } from '../utils';
 import { TYPE_OF_POINT, CITIES } from '../const';
 import { getOffer } from './offer';
 import { getDestination } from './destination';
-
-const pointId = createIdGenerator();
+import { nanoid } from 'nanoid';
 
 function getPoint(){
   return {
-    id: pointId(),
+    id: nanoid(),
     type: getRandomArrayElement(TYPE_OF_POINT),
     city: getRandomArrayElement(CITIES),
     price: getRandomNumber(100, 1500),

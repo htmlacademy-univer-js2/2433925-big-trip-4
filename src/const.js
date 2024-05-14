@@ -62,4 +62,9 @@ const DURATION = {
   MIN: 59
 };
 
-export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION};
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITTING: 'EDITTING',
+};
+
+export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode};
