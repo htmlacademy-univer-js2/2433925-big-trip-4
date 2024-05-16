@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { FilterType, DURATION } from './const';
+import { FilterType, DURATION, SortType } from './const';
 
 function getRandomNumber(min, max) {
   const lower = Math.ceil(Math.min(max, min));
@@ -110,7 +110,28 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
+function sortDay(DayA, DayB){
+  return dayjs(DayA.startTime).diff(dayjs(DayB.startTime));
+}
+
+function sortTime(timeA, timeB){
+  const timeDif1 = dayjs(timeA.finishTime).diff(dayjs(timeA.startTime));
+  const timeDif2 = dayjs(timeB.finishTime).diff(dayjs(timeB.startTime));
+
+  return timeDif2 - timeDif1;
+}
+
+function sortPrice(priceA, priceB) {
+  return priceB.price - priceA.price;
+}
+
+const sort = {
+  [SortType.DAY]: (points) => [...points].sort(sortDay),
+  [SortType.PRICE]: (points) => [...points].sort(sortPrice),
+  [SortType.TIME]: (points) => [...points].sort(sortTime),
+};
+
 export {
-  isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate,
+  isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, sortDay, sortTime, sortPrice, sort,
   getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem
 };
