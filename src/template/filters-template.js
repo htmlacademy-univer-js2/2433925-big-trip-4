@@ -9,9 +9,9 @@ function createFilterItems () {
   const container = [];
   for (const filter of FILTER_ITEMS) {
     const item = `<div class="trip-filters__filter">
-                    <input id="filter-${filter.toLocaleLowerCase()}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.toLocaleLowerCase()}"
+                    <input id="filter-${filter.toLowerCase()}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.toLowerCase()}"
                     ${filter === 'Everything' ? 'checked' : ''}>
-                    <label class="trip-filters__filter-label" for="filter-${filter.toLocaleLowerCase()}">${filter}</label>
+                    <label class="trip-filters__filter-label" for="filter-${filter.toLowerCase()}">${filter}</label>
                   </div>`;
     container.push(item);
   }

@@ -3,12 +3,16 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 export default class WaypointView extends AbstractView{
   #point;
+  #offers;
+  #destinations;
   #onEditClick;
   #onFavoriteClick;
 
-  constructor({point, onEditClick, onFavoriteClick}){
+  constructor({point, pointOffers, pointDestinations, onEditClick, onFavoriteClick}){
     super();
     this.#point = point;
+    this.#offers = pointOffers;
+    this.#destinations = pointDestinations;
     this.#onEditClick = onEditClick;
     this.#onFavoriteClick = onFavoriteClick;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
@@ -16,7 +20,7 @@ export default class WaypointView extends AbstractView{
   }
 
   get template(){
-    return createWaypointTemplate(this.#point);
+    return createWaypointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
   #editClickHandler = (evt) => {

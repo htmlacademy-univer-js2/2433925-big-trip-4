@@ -1,6 +1,6 @@
 import {render, replace, remove} from '../framework/render.js';
-import PointView from '../view/waypoint.js';
-import EditFormView from '../view/editing-form.js';
+import WaypointView from '../view/waypoint.js';
+import EditingFormView from '../view/editing-form.js';
 import { Mode } from '../const.js';
 
 export default class PointPresenter {
@@ -11,9 +11,13 @@ export default class PointPresenter {
   #pointEditComponent = null;
   #mode = Mode.DEFAULT;
   #point = null;
+  #offersModel = null;
+  #destinationsModel = null;
 
-  constructor({pointListContainer, onDataChange, onModeChange}) {
+  constructor({pointListContainer, offersModel, destinationsModel, onDataChange, onModeChange}) {
     this.#pointListContainer = pointListContainer;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -23,16 +27,20 @@ export default class PointPresenter {
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
-    this.#pointComponent = new PointView ({
+    this.#pointComponent = new WaypointView ({
       point: this.#point,
+      pointOffers: this.#offersModel.getByType(point.type),
+      pointDestinations: this.#destinationsModel.getById(point.destinations),
       onEditClick: this.#handleEditClick,
       onFavoriteClick: this.#handleFavoriteClick,
     });
 
 
-    this.#pointEditComponent = new EditFormView({
+    this.#pointEditComponent = new EditingFormView({
       point: this.#point,
-      onResetClick: this.#handleFormClick,
+      offers: this.#offersModel.offers,
+      destinations: this.#destinationsModel.destinations,
+      onResetClick: this.#handleResetClick,
       onSubmitClick: () => {
 
       },
@@ -63,6 +71,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditToPoint();
     }
   }
@@ -83,6 +92,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditToPoint();
     }
   };
@@ -106,6 +116,11 @@ export default class PointPresenter {
   #handleFormSubmit = (point) => {
     this.#handleDataChange(point);
     this.#replacePointToEdit();
+  };
+
+  #handleResetClick = () => {
+    this.#pointEditComponent.reset(this.#point);
+    this.#replaceEditToPoint();
   };
 }
 

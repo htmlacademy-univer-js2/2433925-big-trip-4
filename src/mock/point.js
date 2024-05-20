@@ -1,20 +1,17 @@
-import { getRandomArrayElement, getRandomNumber, getDate } from '../utils';
-import { TYPE_OF_POINT, CITIES } from '../const';
-import { getOffer } from './offer';
-import { getDestination } from './destination';
+import { getRandomNumber, getDate } from '../utils';
 import { nanoid } from 'nanoid';
 
-function getPoint(){
+function getPoint(type, city, offersId, destinationId){
   return {
     id: nanoid(),
-    type: getRandomArrayElement(TYPE_OF_POINT),
-    city: getRandomArrayElement(CITIES),
+    type,
+    city,
     price: getRandomNumber(100, 1500),
     startTime: getDate({next: false}),
     finishTime: getDate({next: true}),
     isFavourite: getRandomNumber(0, 1),
-    offers: Array.from({length: getRandomNumber(1, 5)}, getOffer),
-    destination: getDestination()
+    offers: offersId,
+    destination: destinationId
   };
 }
 

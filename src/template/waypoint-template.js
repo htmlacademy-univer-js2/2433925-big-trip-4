@@ -4,18 +4,20 @@ function makeOffers(offers){
   const offersMarkingArr = [];
 
   for (const offer of offers){
-    const checkedOffer = `
-    <li class="event__offer">
-      <span class="event__offer-title">${offer.name}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </li>`;
-    offersMarkingArr.push(checkedOffer);
+    if (offer.isChecked) {
+      const checkedOffer = `
+      <li class="event__offer">
+        <span class="event__offer-title">${offer.name}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </li>`;
+      offersMarkingArr.push(checkedOffer);
+    }
   }
   return offersMarkingArr.join('');
 }
 
-function createWaypointTemplate(point){
+function createWaypointTemplate(point, offers){
   return `<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="${point.startTime}">${humanizeDate(point.startTime)}</time>
@@ -36,7 +38,7 @@ function createWaypointTemplate(point){
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-      ${makeOffers(point.offers)}
+      ${makeOffers(offers.offers)}
     </ul>
     <button class="event__favorite-btn ${point.isFavourite ? 'event__favorite-btn--active' : ''}" type="button">
       <span class="visually-hidden">Add to favorite</span>
