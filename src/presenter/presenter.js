@@ -1,37 +1,31 @@
 import SortView from '../view/sort.js';
 import CreationFormView from '../view/creation-form.js';
 import EmptyListView from '../view/empty-list.js';
-import { render, RenderPosition} from '../framework/render.js';
+import { render, RenderPosition, remove, replace} from '../framework/render.js';
 import PointPresenter from './point-presenter.js';
-import { updateItem } from '../utils.js';
+import { updateItem, sortTime, sortPrice, sortDay} from '../utils.js';
+import { SortType } from '../const.js';
 
 export default class Presenter {
-  #creationFormView = new CreationFormView();
-  #sort = new SortView();
+  #creationFormView;
+  #sort;
   #container;
   #pointsModel;
-  #offersModel;
   #points = [];
-  #offers = [];
   #pointPresenters = new Map();
   #noPointComponent = new EmptyListView();
+  #currentSortType = SortType.DAY;
+  #sourcePoints = [];
 
-  constructor({ container, points, offers }) {
+  constructor({ container, points}) {
     this.#container = container;
     this.#pointsModel = points;
-    this.#offersModel = offers;
   }
 
   init() {
-    this.#points = [...this.#pointsModel.points];
-    this.#offers = [...this.#offersModel.offers];
-
-    if (this.#points.length === 0) {
-      this.#renderNoPoints();
-    } else {
-      this.#render();
-    }
-    this.#renderSort();
+    this.#points = [...this.#pointsModel.points].sort(sortDay);
+    this.#sourcePoints = [...this.#pointsModel.points];
+    this.#render();
   }
 
   #onModeChange = () => {
@@ -48,9 +42,11 @@ export default class Presenter {
     this.#pointPresenters.set(point.id, pointPresenter);
   }
 
-  #renderPoints(from, to) {
-    this.#points.slice(from, to).forEach((point) => this.#renderPoint(point));
-  }
+  #renderPoints = () => {
+    this.#points.forEach((point) => {
+      this.#renderPoint(point);
+    });
+  };
 
   #renderNoPoints() {
     render(this.#noPointComponent, this.#container, RenderPosition.AFTERBEGIN);
@@ -58,23 +54,70 @@ export default class Presenter {
 
   #onDataChange = (updatedPoint) => {
     this.#container = updateItem(this.#points, updatedPoint);
+    this.#sourcePoints = updateItem(this.#sourcePoints, updateItem);
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #renderSort() {
-    render(this.#sort, this.#container, RenderPosition.AFTERBEGIN);
+  #sortPoints(sortType) {
+    switch(sortType) {
+      case SortType.TIME:
+        this.#points.sort(sortTime);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortPrice);
+        break;
+      case SortType.DAY:
+        this.#points.sort(sortDay);
+        break;
+    }
+
+    this.#currentSortType = sortType;
   }
 
-  #clearPoinList() {
+  #onSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderSort();
+    this.#renderPoints();
+  };
+
+  #renderSort() {
+    const prevSortComponent = this.#sort;
+    this.#sort = new SortView({
+      type: this.#currentSortType,
+      onSortTypeChange: this.#onSortTypeChange,
+    });
+
+    if (prevSortComponent) {
+      replace(this.#sort, prevSortComponent);
+      remove(prevSortComponent);
+    } else {
+      render(this.#sort, this.#container, RenderPosition.AFTERBEGIN);
+    }
+  }
+
+  #clearPointList() {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
   }
 
-  #render() {
+  #rendereventListContainer = () => {
+    this.#creationFormView = new CreationFormView();
     render(this.#creationFormView, this.#container);
+  };
 
-    for(let i = 0; i < this.#points.length; i++) {
-      this.#renderPoint(this.#points[i]);
+  #render() {
+    if (this.#points.length === 0) {
+      this.#renderNoPoints();
+      return;
     }
+
+    this.#renderSort();
+    this.#rendereventListContainer();
+    this.#renderPoints();
   }
 }
