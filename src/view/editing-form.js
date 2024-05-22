@@ -1,31 +1,36 @@
-import {createEditingFormTemplate} from '../template/editing-form-template.js';
+import { createEditingFormTemplate } from '../template/editing-form-template.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getDestination } from '../mock/destination.js';
 import { getOffer } from '../mock/offer.js';
 import { getRandomNumber } from '../utils.js';
+import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const EMPTY_POINT = {
   id: 1,
   type: 'flight',
   city: 'Moscow',
   price: getRandomNumber(0, 1000),
-  startTime: '2024-04-10 04:40',
-  finishTime: '2024-04-10 04:40',
+  startTime: dayjs('2024-04-10 04:40'),
+  finishTime: dayjs('2024-04-10 06:40'),
   isFavorite: false,
-  offers: Array.from({length: getRandomNumber(1, 5)}, getOffer),
+  offers: Array.from({ length: getRandomNumber(1, 5) }, getOffer),
   destination: getDestination()
 };
 
-export default class EditingFormView extends AbstractStatefulView{
+export default class EditingFormView extends AbstractStatefulView {
   #offers;
   #destinations;
   #onSubmitClick;
   #onResetClick;
   #onFormSave;
+  #startDatepicker;
+  #finishDatepicker;
 
-  constructor({point = EMPTY_POINT, offers, destinations, onSubmitClick, onResetClick, onFormSave}){
+  constructor({ point = EMPTY_POINT, offers, destinations, onSubmitClick, onResetClick, onFormSave }) {
     super();
-    this._setState(EditingFormView.parsePointToState({point}));
+    this._setState(EditingFormView.parsePointToState({ point }));
     this.#offers = offers;
     this.#destinations = destinations;
     this.#onSubmitClick = onSubmitClick;
@@ -34,11 +39,25 @@ export default class EditingFormView extends AbstractStatefulView{
     this._restoreHandlers();
   }
 
-  get template(){
-    return createEditingFormTemplate({ state: this._state, offers: this.#offers, destinations: this.#destinations});
+  get template() {
+    return createEditingFormTemplate({ state: this._state, offers: this.#offers, destinations: this.#destinations });
   }
 
-  reset = (point) => this.updateElement({point});
+  removeElement() {
+    super.removeElement();
+
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (this.#finishDatepicker) {
+      this.#finishDatepicker.destroy();
+      this.#finishDatepicker = null;
+    }
+  }
+
+  reset = (point) => this.updateElement({ point });
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -63,6 +82,7 @@ export default class EditingFormView extends AbstractStatefulView{
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.#setDatepickers();
   }
 
   #typeChangeHandler = (evt) => {
@@ -104,11 +124,61 @@ export default class EditingFormView extends AbstractStatefulView{
     this._setState({
       point: {
         ...this._state.point,
-        price: evt.target.valueAsNumber
+        price: evt.target.value
       }
     });
   };
 
-  static parsePointToState = ({point}) => ({point});
+  #startDateCloseHandler = ([userDate]) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        startTime: userDate
+      }
+    });
+    this.#finishDatepicker.set('minDate', this._state.point.startTime);
+  };
+
+  #finishDateCloseHandler = ([userDate]) => {
+    this._setState({
+      point: {
+        ...this._state.point,
+        finishTime: userDate
+      }
+    });
+    this.#startDatepicker.set('maxDate', this._state.point.finishTime);
+  };
+
+  #setDatepickers() {
+    const [startTimeElement, finishTimeElement] = this.element.querySelectorAll('.event__input--time');
+    const commonConfig = {
+      dateFormat: 'd/m/y H:i',
+      enableTime: true,
+      locale: {
+        firstDayOfWeek: 1,
+      },
+      'time_24hr': true
+    };
+    this.#startDatepicker = flatpickr(
+      startTimeElement,
+      {
+        ...commonConfig,
+        defaultDate: this._state.point.startTime,
+        onClose: this.#startDateCloseHandler,
+        maxDate: this._state.point.finishTime,
+      }
+    );
+    this.#finishDatepicker = flatpickr(
+      finishTimeElement,
+      {
+        ...commonConfig,
+        defaultDate: this._state.point.finishTime,
+        onClose: this.#finishDateCloseHandler,
+        minDate: this._state.point.startTime
+      }
+    );
+  }
+
+  static parsePointToState = ({ point }) => ({ point });
   static parseStateToPoint = (state) => state.point;
 }
