@@ -1,15 +1,26 @@
-import { getRandomNumber } from '../utils';
-import { OFFERS } from '../const';
-import { getRandomArrayElement} from '../utils';
+import { getRandomNumber, getRandomArrayElement } from '../utils';
+import { OFFERS, TYPE_OF_POINT } from '../const';
 import { nanoid } from 'nanoid';
 
-function getOffer() {
+function getOffer(type) {
   return {
-    id: nanoid(),
-    price: getRandomNumber(5, 100),
-    name: getRandomArrayElement(OFFERS),
-    isChecked: getRandomNumber(0, 1)
+    type,
+    offers: Array.from({length: getRandomNumber(0, OFFERS.length)}, ()=>(
+      {
+        id: nanoid(),
+        price: getRandomNumber(5, 100),
+        name: getRandomArrayElement(OFFERS),
+        isChecked: getRandomNumber(0, 1)
+      }
+    ))
   };
 }
 
-export {getOffer};
+const mockOffers = [];
+
+TYPE_OF_POINT.forEach((type) => {
+  const offer = getOffer(type);
+  mockOffers.push(offer);
+});
+
+export {getOffer, mockOffers};

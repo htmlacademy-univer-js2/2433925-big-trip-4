@@ -11,15 +11,19 @@ export default class Presenter {
   #sort;
   #container;
   #pointsModel;
+  #offersModel;
+  #destinationsModel;
   #points = [];
   #pointPresenters = new Map();
   #noPointComponent = new EmptyListView();
   #currentSortType = SortType.DAY;
   #sourcePoints = [];
 
-  constructor({ container, points}) {
+  constructor({ container, points, offerModel, destinationModel}) {
     this.#container = container;
     this.#pointsModel = points;
+    this.#offersModel = offerModel;
+    this.#destinationsModel = destinationModel;
   }
 
   init() {
@@ -35,6 +39,8 @@ export default class Presenter {
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       pointListContainer: this.#creationFormView.element,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
       onDataChange: this.#onDataChange,
       onModeChange: this.#onModeChange
     });
