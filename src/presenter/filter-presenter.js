@@ -8,12 +8,15 @@ export default class FilterPresenter {
   #filterModel;
   #pointsModel;
   #filterComponent;
+  #destinationsModel;
+  #offersModel;
 
-  constructor({filterContainer, pointsModel, filterModel}) {
+  constructor({filterContainer, pointsModel, filterModel, destinationsModel, offersModel}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
-
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -61,6 +64,11 @@ export default class FilterPresenter {
   };
 
   #handleModelEvent = () => {
+    if (this.#offersModel.offers.length === 0 || this.#offersModel.isSuccessfullLoading === false ||
+      this.#destinationsModel.destinations.length === 0 || this.#destinationsModel.isSuccessfullLoading === false ||
+      this.#pointsModel.isSuccessfullLoading === false) {
+      return;
+    }
     this.init();
   };
 

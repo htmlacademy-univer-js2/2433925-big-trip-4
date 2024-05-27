@@ -53,17 +53,14 @@ const renderTotalPriceTrip = (points, offers) => {
 };
 
 function createTripInfoTemplate(points, destinations, offers){
-  if (destinations.length === 0 || offers.length === 0) {
-    return '';
-  }
-  return (`<div class="trip-info"><div class="trip-info__main">
-    <h1 class="trip-info__title">${renderRouteTrip(points, destinations)}</h1>
-    <p class="trip-info__dates">${renderDatesTrip(points)}</p>
-    </div>
-    <p class="trip-info__cost">
-    ${renderTotalPriceTrip(points, offers)}
-    </p>
-    </div>`);
+  return (destinations.length === 0 || offers.length === 0 ? '' : `<div class="trip-info"><div class="trip-info__main">
+  <h1 class="trip-info__title">${renderRouteTrip(points, destinations)}</h1>
+  <p class="trip-info__dates">${renderDatesTrip(points)}</p>
+  </div>
+  <p class="trip-info__cost">
+  ${renderTotalPriceTrip(points, offers)}
+  </p>
+  </div>`);
 }
 
 export {createTripInfoTemplate};

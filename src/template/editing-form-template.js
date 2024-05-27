@@ -99,7 +99,7 @@ const createEditingFormTemplate = (point, destinations, allOffers, isNewPoint) =
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}"  ${isDisabled ? 'disabled' : ''}>
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-        ${renderResetButtonTemplate(isNewPoint, isDeleting)}
+        ${renderResetButtonTemplate(isNewPoint, isDisabled, isDeleting)}
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
