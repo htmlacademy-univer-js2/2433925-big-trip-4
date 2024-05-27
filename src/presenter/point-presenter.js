@@ -7,7 +7,6 @@ export default class PointPresenter {
   #pointListContainer;
   #pointComponent;
   #editFormComponent;
-  #pointsModel;
   #destinationsModel;
   #offersModel;
   #destinations;
@@ -17,9 +16,8 @@ export default class PointPresenter {
   #point;
   #mode = Mode.PREVIEW;
 
-  constructor({pointListContainer, pointsModel, changeData, changeMode, destinationsModel, offersModel}) {
+  constructor({pointListContainer, changeData, changeMode, destinationsModel, offersModel}) {
     this.#pointListContainer = pointListContainer;
-    this.#pointsModel = pointsModel;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
     this.#destinationsModel = destinationsModel;
@@ -35,7 +33,7 @@ export default class PointPresenter {
     this.#pointComponent = new WaypointView(point, this.#destinations, this.#offers);
     this.#editFormComponent = new EditingFormView({
       point: point,
-      destination: this.#destinations,
+      destinations: this.#destinations,
       offers: this.#offers,
       isNewPoint: false
     });
@@ -55,7 +53,8 @@ export default class PointPresenter {
         replace(this.#pointComponent, prevPointComponent);
         break;
       case Mode.EDITING:
-        replace(this.#editFormComponent, prevEditingFormComponent);
+        replace(this.#pointComponent, prevEditingFormComponent);
+        this.#mode = Mode.PREVIEW;
         break;
     }
 
@@ -117,7 +116,6 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
-    this.#replaceEditingFormToPoint();
   };
 
   #handleDeleteClick = (point) => {
@@ -126,5 +124,40 @@ export default class PointPresenter {
       UpdateType.MINOR,
       point,
     );
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.PREVIEW) {
+      this.#editFormComponent.shake();
+      return;
+    }
+
+    this.#editFormComponent.shake(this.#resetFormState);
+  };
+
+  #resetFormState = () => {
+    this.#editFormComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
   };
 }
