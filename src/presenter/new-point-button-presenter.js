@@ -5,12 +5,14 @@ export default class NewPointButtonPresenter {
   #tripPresenter;
   #destinationsModel;
   #offersModel;
+  #pointsModel;
   #newPointButtonContainer;
   #newPointButtonComponent;
 
-  constructor({newPointButtonContainer, destinationsModel, offersModel, tripPresenter}) {
+  constructor({newPointButtonContainer, destinationsModel, offersModel, pointsModel, tripPresenter}) {
     this.#newPointButtonContainer = newPointButtonContainer;
     this.#destinationsModel = destinationsModel;
+    this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#tripPresenter = tripPresenter;
   }
@@ -22,7 +24,9 @@ export default class NewPointButtonPresenter {
   renderNewPointButton = () => {
     render(this.#newPointButtonComponent, this.#newPointButtonContainer);
     this.#newPointButtonComponent.setClickHandler(this.#handleNewPointButtonClick);
-    if (this.#offersModel.offers.length === 0 || this.#destinationsModel.destinations.length === 0) {
+    if (this.#offersModel.offers.length === 0 || this.#offersModel.isSuccessfullLoading === false ||
+      this.#destinationsModel.destinations.length === 0 || this.#destinationsModel.isSuccessfullLoading === false ||
+      this.#pointsModel.isSuccessfullLoading === false) {
       this.#newPointButtonComponent.element.disabled = true;
     }
   };

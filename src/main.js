@@ -22,22 +22,23 @@ const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATIO
 const destinationsModel = new DestinationsModel(new DestinationsApiService(END_POINT, AUTHORIZATION));
 const offersModel = new OffersModel(new OffersApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
-const filterPresenter = new FilterPresenter({filterContainer, filterModel, pointsModel});
+const filterPresenter = new FilterPresenter({filterContainer, filterModel, pointsModel, destinationsModel, offersModel});
 filterPresenter.init();
 const tripPresenter = new TripPresenter({
-  tripInfoContainer: tripInfoContainer,
+  tripInfoContainer,
   tripContainer: tripEvents,
-  pointsModel: pointsModel,
-  filterModel: filterModel,
-  destinationsModel: destinationsModel,
-  offersModel: offersModel,
+  pointsModel,
+  filterModel,
+  destinationsModel,
+  offersModel,
 });
 tripPresenter.init();
 const newPointButtonPresenter = new NewPointButtonPresenter({
   newPointButtonContainer: tripMain,
-  destinationsModel: destinationsModel,
-  offersModel: offersModel,
-  tripPresenter: tripPresenter,
+  destinationsModel,
+  offersModel,
+  pointsModel,
+  tripPresenter,
 });
 newPointButtonPresenter.init();
 offersModel.init().finally(() => {

@@ -123,7 +123,7 @@ export default class EditingFormView extends AbstractStatefulView{
 
   #pointOffersChangeHandler = (evt) => {
     evt.preventDefault();
-    const checkedOfferId = Number(evt.target.id.slice(-1));
+    const checkedOfferId = evt.target.id.slice(12);
     const offers = this._state.offers.filter((offer) => offer !== checkedOfferId);
     let currentOfferIds = [...this._state.offers];
     if (offers.length !== this._state.offers.length) {
@@ -133,7 +133,7 @@ export default class EditingFormView extends AbstractStatefulView{
       currentOfferIds.push(checkedOfferId);
     }
     this._setState({
-      offers: currentOfferIds,
+      offers: currentOfferIds
     });
   };
 
