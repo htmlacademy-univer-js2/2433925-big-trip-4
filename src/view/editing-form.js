@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
-import { TYPE_OF_POINT } from '../const.js';
+import { PointType } from '../const';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -9,10 +9,10 @@ const POINT = {
   basePrice: 0,
   dateFrom: dayjs(),
   dateTo: dayjs(),
-  destinationId: 0,
+  destination: 0,
   isFavorite: false,
-  offerIds: [],
-  type: TYPE_OF_POINT[0],
+  offers: [],
+  type: PointType.TAXI,
 };
 
 export default class EditingFormView extends AbstractStatefulView{
@@ -21,6 +21,7 @@ export default class EditingFormView extends AbstractStatefulView{
   #datepickerFrom;
   #datepickerTo;
   #isNewPoint;
+  #offersByType;
 
   constructor({point = POINT, destination, offers, isNewPoint}) {
     super();
@@ -28,6 +29,7 @@ export default class EditingFormView extends AbstractStatefulView{
     this.#offers = offers;
     this._state = EditingFormView.parsePointToState(point);
     this.#isNewPoint = isNewPoint;
+    this.#offersByType = this.#offers.find((offer) => offer.type === this._state.type);
     this.#setInnerHandlers();
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
@@ -94,26 +96,26 @@ export default class EditingFormView extends AbstractStatefulView{
 
   #pointDateFromChangeHandler = ([userDate]) =>{
     this.updateElement({
-      dateFrom: dayjs(userDate).toDate(),
+      dateFrom: userDate
     });
   };
 
   #pointDateToChangeHandler = ([userDate]) =>{
     this.updateElement({
-      dateTo: dayjs(userDate).toDate(),
+      dateTo: userDate
     });
   };
 
   #pointPriceChangeHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: `${Number(evt.target.value).toString()}`,
+      basePrice: Number(evt.target.value),
     });
   };
 
   #pointTypeChangeHandler = (evt) => {
     evt.preventDefault();
-    this._state.offerIds = [];
+    this._state.offers = [];
     this.updateElement({
       type: evt.target.value,
     });
@@ -122,16 +124,16 @@ export default class EditingFormView extends AbstractStatefulView{
   #pointOffersChangeHandler = (evt) => {
     evt.preventDefault();
     const checkedOfferId = Number(evt.target.id.slice(-1));
-    const offerIds = this._state.offerIds.filter((n) => n !== checkedOfferId);
-    let currentOfferIds = [...this._state.offerIds];
-    if (offerIds.length !== this._state.offerIds.length) {
-      currentOfferIds = offerIds;
+    const offers = this._state.offers.filter((n) => n !== checkedOfferId);
+    let currentOfferIds = [...this._state.offers];
+    if (offers.length !== this._state.offers.length) {
+      currentOfferIds = offers;
     }
     else {
       currentOfferIds.push(checkedOfferId);
     }
     this._setState({
-      offerIds: currentOfferIds,
+      offers: currentOfferIds,
     });
   };
 
@@ -139,14 +141,16 @@ export default class EditingFormView extends AbstractStatefulView{
     evt.preventDefault();
     const destination = this.#destination.find((x) => x.name === evt.target.value);
     this.updateElement({
-      destinationId: destination.id,
+      destination: destination.id,
     });
   };
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__input').addEventListener('change', this.#pointDestinationChangeHandler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#pointOffersChangeHandler);
+    if(this.#offersByType && this.#offersByType.offers.length > 0){
+      this.element.querySelector('.event__available-offers').addEventListener('change', this.#pointOffersChangeHandler);
+    }
     this.element.querySelector('.event__input--price').addEventListener('change', this.#pointPriceChangeHandler);
   };
 

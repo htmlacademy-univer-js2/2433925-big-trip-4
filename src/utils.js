@@ -110,25 +110,20 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-function sortDay(DayA, DayB){
-  return dayjs(DayA.startTime).diff(dayjs(DayB.startTime));
-}
+const sortPricePoint = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
-function sortTime(timeA, timeB){
-  const timeDif1 = dayjs(timeA.finishTime).diff(dayjs(timeA.startTime));
-  const timeDif2 = dayjs(timeB.finishTime).diff(dayjs(timeB.startTime));
+const sortDayPoint = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
-  return timeDif2 - timeDif1;
-}
+const sortTimePoint = (pointA, pointB) => {
+  const timePointA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
+  const timePointB = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
+  return timePointB - timePointA;
+};
 
-function sortPrice(priceA, priceB) {
-  return priceB.price - priceA.price;
-}
-
-const sort = {
-  [SortType.DAY]: (points) => [...points].sort(sortDay),
-  [SortType.PRICE]: (points) => [...points].sort(sortPrice),
-  [SortType.TIME]: (points) => [...points].sort(sortTime),
+const sorting = {
+  [SortType.DAY]: (points) => points.sort(sortDayPoint),
+  [SortType.TIME]: (points) => points.sort(sortTimePoint),
+  [SortType.PRICE]: (points) => points.sort(sortPricePoint)
 };
 
 function toUpperCaseFirstLetter(value){
@@ -142,6 +137,6 @@ function toUpperCaseFirstLetter(value){
 }
 
 export {
-  isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, sortDay, sortTime, sortPrice, sort,
+  isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, sorting,
   getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem, toUpperCaseFirstLetter
 };
