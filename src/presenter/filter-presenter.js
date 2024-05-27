@@ -9,7 +9,7 @@ export default class FilterPresenter {
   #pointsModel;
   #filterComponent;
 
-  constructor(filterContainer, filterModel, pointsModel) {
+  constructor({filterContainer, pointsModel, filterModel}) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;

@@ -67,6 +67,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const UserAction = {
@@ -75,4 +76,43 @@ const UserAction = {
   DELETE_POINT: 'DELETE_POINT',
 };
 
-export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType, UpdateType, UserAction};
+const SortTypeDescription = {
+  [SortType.DAY]: 'Day',
+  [SortType.EVENT]: 'Event',
+  [SortType.TIME]: 'Time',
+  [SortType.PRICE]: 'Price',
+  [SortType.OFFER]: 'Offer',
+};
+
+const PointType = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant'
+};
+
+const PointTypeDescription = {
+  [PointType.BUS]: 'Bus',
+  [PointType.SHIP]: 'Ship',
+  [PointType.RESTAURANT]: 'Restaurant',
+  [PointType.TAXI]: 'Taxi',
+  [PointType.DRIVE]: 'Drive',
+  [PointType.FLIGHT]: 'Flight',
+  [PointType.TRAIN]: 'Train',
+  [PointType.CHECK_IN]: 'Check-in',
+  [PointType.SIGHTSEEING]: 'Sightseeing'
+};
+
+const ApiServiceResponseMethod = {
+  PUT: 'PUT',
+  GET: 'GET'
+};
+
+const SORT_TYPES_DISABLED = ['event', 'offer'];
+
+export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType, UpdateType, UserAction, SortTypeDescription, PointTypeDescription, ApiServiceResponseMethod, SORT_TYPES_DISABLED, PointType};
