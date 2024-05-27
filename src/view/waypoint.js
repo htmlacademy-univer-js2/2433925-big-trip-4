@@ -3,33 +3,37 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 export default class WaypointView extends AbstractView{
   #point;
+  #destination;
   #offers;
-  #destinations;
-  #onEditClick;
-  #onFavoriteClick;
 
-  constructor({point, pointOffers, pointDestinations, onEditClick, onFavoriteClick}){
+  constructor(point, destination, offers){
     super();
     this.#point = point;
-    this.#offers = pointOffers;
-    this.#destinations = pointDestinations;
-    this.#onEditClick = onEditClick;
-    this.#onFavoriteClick = onFavoriteClick;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+    this.#destination = destination;
+    this.#offers = offers;
   }
 
   get template(){
-    return createWaypointTemplate(this.#point, this.#offers, this.#destinations);
+    return createWaypointTemplate(this.#point, this.#destination, this.#offers);
   }
+
+  setEditClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onEditClick();
+    this._callback.click();
+  };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onFavoriteClick();
+    this._callback.favoriteClick();
   };
 }

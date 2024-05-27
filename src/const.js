@@ -10,19 +10,7 @@ const TYPE_OF_POINT = [
   'Restaurant',
 ];
 
-const CITIES = [
-  'Moscow',
-  'Yekaterinburg',
-  'Ishevsk',
-  'Novosibirsk',
-  'Kazan',
-  'Perm',
-  'Sochi',
-  'Sevastopol',
-  'Sarapul',
-  'Samara',
-  'Surgut',
-];
+const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'London', 'Paris'];
 
 const OFFERS = [
   'Add Luggage',
@@ -63,14 +51,28 @@ const DURATION = {
 };
 
 const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITTING: 'EDITTING',
+  PREVIEW: 'preview',
+  EDITING: 'editing',
 };
 
 const SortType = {
   DAY: 'day',
+  EVENT: 'event',
   TIME: 'time',
-  PRICE: 'price'
+  PRICE: 'price',
+  OFFER: 'offer',
 };
 
-export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType};
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType, UpdateType, UserAction};
