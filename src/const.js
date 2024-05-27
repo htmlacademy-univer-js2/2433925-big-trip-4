@@ -110,9 +110,17 @@ const PointTypeDescription = {
 
 const ApiServiceResponseMethod = {
   PUT: 'PUT',
-  GET: 'GET'
+  GET: 'GET',
+  POST: 'POST',
+  DELETE: 'DELETE'
 };
 
-const SORT_TYPES_DISABLED = ['event', 'offer'];
+const SORT_TYPES_DISABLED = [SortType.EVENT, SortType.OFFER];
 
-export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType, UpdateType, UserAction, SortTypeDescription, PointTypeDescription, ApiServiceResponseMethod, SORT_TYPES_DISABLED, PointType};
+const TimeLimit = {
+  LOWER_LIMIT: 300,
+  UPPER_LIMIT: 1000
+};
+
+export {TYPE_OF_POINT, CITIES, DESCRIPTION, OFFERS, FilterType, DURATION, Mode, SortType, UpdateType, UserAction, SortTypeDescription, PointTypeDescription,
+  ApiServiceResponseMethod, SORT_TYPES_DISABLED, PointType, TimeLimit};

@@ -1,6 +1,5 @@
 import { render, remove, RenderPosition } from '../framework/render.js';
 import EditingFormView from '../view/editing-form.js';
-import {nanoid} from 'nanoid';
 import { UserAction, UpdateType } from '../const.js';
 
 export default class NewPointPresenter {
@@ -8,16 +7,14 @@ export default class NewPointPresenter {
   #createPointComponent;
   #changeData;
   #destroyCallback;
-  #pointsModel;
   #destinationsModel;
   #offersModel;
   #destinations;
   #offers;
 
-  constructor({pointListContainer, changeData, pointsModel, destinationsModel, offersModel}) {
+  constructor({pointListContainer, changeData, destinationsModel, offersModel}) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-    this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
   }
@@ -32,7 +29,7 @@ export default class NewPointPresenter {
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
     this.#createPointComponent = new EditingFormView({
-      destination: this.#destinations,
+      destinations: this.#destinations,
       offers: this.#offers,
       isNewPoint: true
     });
@@ -68,8 +65,27 @@ export default class NewPointPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point},
+      point,
     );
     this.destroy();
+  };
+
+  setSaving = () => {
+    this.#createPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    this.#createPointComponent.shake(this.#resetFormState);
+  };
+
+  #resetFormState = () => {
+    this.#createPointComponent.updateElement({
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
   };
 }

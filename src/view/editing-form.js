@@ -16,16 +16,16 @@ const POINT = {
 };
 
 export default class EditingFormView extends AbstractStatefulView{
-  #destination;
+  #destinations;
   #offers;
   #datepickerFrom;
   #datepickerTo;
   #isNewPoint;
   #offersByType;
 
-  constructor({point = POINT, destination, offers, isNewPoint}) {
+  constructor({point = POINT, destinations, offers, isNewPoint}) {
     super();
-    this.#destination = destination;
+    this.#destinations = destinations;
     this.#offers = offers;
     this._state = EditingFormView.parsePointToState(point);
     this.#isNewPoint = isNewPoint;
@@ -36,7 +36,7 @@ export default class EditingFormView extends AbstractStatefulView{
   }
 
   get template () {
-    return createEditingFormTemplate(this._state, this.#destination, this.#offers, this.#isNewPoint);
+    return createEditingFormTemplate(this._state, this.#destinations, this.#offers, this.#isNewPoint);
   }
 
   setPointClickHandler = (callback) => {
@@ -124,7 +124,7 @@ export default class EditingFormView extends AbstractStatefulView{
   #pointOffersChangeHandler = (evt) => {
     evt.preventDefault();
     const checkedOfferId = Number(evt.target.id.slice(-1));
-    const offers = this._state.offers.filter((n) => n !== checkedOfferId);
+    const offers = this._state.offers.filter((offer) => offer !== checkedOfferId);
     let currentOfferIds = [...this._state.offers];
     if (offers.length !== this._state.offers.length) {
       currentOfferIds = offers;
@@ -139,7 +139,7 @@ export default class EditingFormView extends AbstractStatefulView{
 
   #pointDestinationChangeHandler = (evt) => {
     evt.preventDefault();
-    const destination = this.#destination.find((x) => x.name === evt.target.value);
+    const destination = this.#destinations.find((dest) => dest.name === evt.target.value);
     this.updateElement({
       destination: destination.id,
     });
@@ -196,10 +196,16 @@ export default class EditingFormView extends AbstractStatefulView{
   static parsePointToState = (point) => ({...point,
     dateTo: dayjs(point.dateTo).toDate(),
     dateFrom: dayjs(point.dateFrom).toDate(),
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false
   });
 
   static parseStateToPoint = (state) => {
     const point = {...state};
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
     return point;
   };
 }
