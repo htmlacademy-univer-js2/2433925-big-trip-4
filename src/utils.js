@@ -131,7 +131,17 @@ const sort = {
   [SortType.TIME]: (points) => [...points].sort(sortTime),
 };
 
+function toUpperCaseFirstLetter(value){
+  if (!value){
+    return value;
+  }
+
+  const firstLetter = value[0].toUpperCase();
+  const remainingPart = value.slice(1);
+  return firstLetter + remainingPart;
+}
+
 export {
   isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, sortDay, sortTime, sortPrice, sort,
-  getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem
+  getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem, toUpperCaseFirstLetter
 };
