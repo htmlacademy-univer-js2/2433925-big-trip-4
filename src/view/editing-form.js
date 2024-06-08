@@ -141,9 +141,15 @@ export default class EditingFormView extends AbstractStatefulView{
   #pointDestinationChangeHandler = (evt) => {
     evt.preventDefault();
     const destination = this.#destinations.find((dest) => dest.name === evt.target.value);
-    this.updateElement({
-      destination: destination.id,
-    });
+    if (destination) {
+      this.updateElement({
+        destination: destination.id,
+      });
+    } else {
+      this.updateElement({
+        destination: '',
+      });
+    }
   };
 
   #setInnerHandlers = () => {
