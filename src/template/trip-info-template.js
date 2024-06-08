@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 const renderRouteTrip = (points, destinations) => {
-  if (points.length === 0) {
+  if (points.length === 0 || destinations.length === 0) {
     return '';
   }
   const routeWithoutRepeats = [points[0].destination];

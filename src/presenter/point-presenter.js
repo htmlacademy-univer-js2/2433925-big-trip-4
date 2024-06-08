@@ -100,6 +100,7 @@ export default class PointPresenter {
       UpdateType.PATCH,
       {...this.#point, isFavorite: !this.#point.isFavorite},
     );
+    this.#pointComponent.shake(this.#resetFormState);
   };
 
   #handleEditClick = () => {
