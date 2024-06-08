@@ -1,6 +1,6 @@
 function createNoAdditionalInfoTemplate(){
   return (`<p class="trip-events__msg">
-  Sorry, there was an error loading the data
+  failed to load latest route information
   </p>`);
 }
 

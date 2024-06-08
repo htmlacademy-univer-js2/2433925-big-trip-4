@@ -53,7 +53,7 @@ const renderTotalPriceTrip = (points, offers) => {
 };
 
 function createTripInfoTemplate(points, destinations, offers){
-  return (destinations.length === 0 || offers.length === 0 ? '' : `<div class="trip-info"><div class="trip-info__main">
+  return (`<div class="trip-info"><div class="trip-info__main">
   <h1 class="trip-info__title">${renderRouteTrip(points, destinations)}</h1>
   <p class="trip-info__dates">${renderDatesTrip(points)}</p>
   </div>

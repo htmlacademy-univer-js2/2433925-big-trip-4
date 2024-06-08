@@ -7,7 +7,7 @@ const TYPE_OF_POINT = [
   'Flight',
   'Check-in',
   'Sightseeing',
-  'Restaurant',
+  'Restaurant'
 ];
 
 const CITIES = ['Amsterdam', 'Chamonix', 'Geneva', 'London', 'Paris'];
