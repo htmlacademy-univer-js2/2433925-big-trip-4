@@ -1,8 +1,10 @@
 import { render, remove, RenderPosition } from '../framework/render.js';
 import EditingFormView from '../view/editing-form.js';
 import { UserAction, UpdateType } from '../const.js';
+import EmptyListView from '../view/empty-list.js';
 
 export default class NewPointPresenter {
+  #noPointComponent;
   #pointListContainer;
   #createPointComponent;
   #changeData;
@@ -11,12 +13,16 @@ export default class NewPointPresenter {
   #offersModel;
   #destinations;
   #offers;
+  #filterType;
+  #pointsModel;
 
-  constructor({pointListContainer, changeData, destinationsModel, offersModel}) {
+  constructor({pointListContainer, changeData, destinationsModel, offersModel, filterType, pointsModel}) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#filterType = filterType;
+    this.#pointsModel = pointsModel;
   }
 
   init = (callback) => {
@@ -39,6 +45,11 @@ export default class NewPointPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
+  #renderNoPoints = () => {
+    this.#noPointComponent = new EmptyListView(this.#filterType);
+    render(this.#noPointComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+  };
+
   destroy = () => {
     if (!this.#createPointComponent) {
       return;
@@ -48,6 +59,9 @@ export default class NewPointPresenter {
     remove(this.#createPointComponent);
     this.#createPointComponent = null;
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    if (this.#pointsModel.points.length === 0){
+      this.#renderNoPoints();
+    }
   };
 
   #onEscKeyDown = (evt) => {
@@ -67,7 +81,6 @@ export default class NewPointPresenter {
       UpdateType.MINOR,
       point,
     );
-    this.destroy();
   };
 
   setSaving = () => {
@@ -77,15 +90,17 @@ export default class NewPointPresenter {
     });
   };
 
-  setAborting = () => {
-    this.#createPointComponent.shake(this.#resetFormState);
-  };
-
   #resetFormState = () => {
     this.#createPointComponent.updateElement({
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
     });
+  };
+
+  setAborting = () => {
+    if (this.#createPointComponent){
+      this.#createPointComponent.shake(this.#resetFormState);
+    }
   };
 }

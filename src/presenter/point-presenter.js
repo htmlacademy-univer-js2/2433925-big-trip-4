@@ -144,20 +144,15 @@ export default class PointPresenter {
     }
   };
 
-  setAborting = () => {
-    if (this.#mode === Mode.PREVIEW) {
-      this.#editFormComponent.shake();
-      return;
-    }
-
-    this.#editFormComponent.shake(this.#resetFormState);
-  };
-
   #resetFormState = () => {
     this.#editFormComponent.updateElement({
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
     });
+  };
+
+  setAborting = () => {
+    this.#editFormComponent.shake(this.#resetFormState);
   };
 }

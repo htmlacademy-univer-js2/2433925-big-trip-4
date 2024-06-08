@@ -1,18 +1,19 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import { PointType } from '../const';
-import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import { createEditingFormTemplate } from '../template/editing-form-template';
+import dayjs from 'dayjs';
+const currentDate = dayjs().toDate();
 
 const POINT = {
   basePrice: 0,
-  dateFrom: dayjs(),
-  dateTo: dayjs(),
+  dateFrom: currentDate,
+  dateTo: currentDate,
   destination: 0,
   isFavorite: false,
   offers: [],
-  type: PointType.TAXI,
+  type: PointType.FLIGHT,
 };
 
 export default class EditingFormView extends AbstractStatefulView{
@@ -36,7 +37,7 @@ export default class EditingFormView extends AbstractStatefulView{
   }
 
   get template () {
-    return createEditingFormTemplate(this._state, this.#destinations, this.#offers, this.#isNewPoint);
+    return createEditingFormTemplate(this._state, this.#destinations, this.#offers, this.#isNewPoint, currentDate);
   }
 
   setPointClickHandler = (callback) => {
@@ -146,10 +147,12 @@ export default class EditingFormView extends AbstractStatefulView{
   };
 
   #setInnerHandlers = () => {
+    const eventAvailableOffers = this.element.querySelector('.event__available-offers');
+
     this.element.querySelector('.event__type-list').addEventListener('change', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__input').addEventListener('change', this.#pointDestinationChangeHandler);
-    if(this.#offersByType && this.#offersByType.offers.length > 0){
-      this.element.querySelector('.event__available-offers').addEventListener('change', this.#pointOffersChangeHandler);
+    if(this.#offersByType && this.#offersByType.offers.length > 0 && eventAvailableOffers){
+      eventAvailableOffers.addEventListener('change', this.#pointOffersChangeHandler);
     }
     this.element.querySelector('.event__input--price').addEventListener('change', this.#pointPriceChangeHandler);
   };
@@ -161,9 +164,8 @@ export default class EditingFormView extends AbstractStatefulView{
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateFrom,
-          maxDate: this._state.dateTo,
-          onChange: this.#pointDateFromChangeHandler,
+          defaultDate: '',
+          onClose: this.#pointDateFromChangeHandler,
         },
       );
     }
@@ -176,9 +178,8 @@ export default class EditingFormView extends AbstractStatefulView{
         {
           enableTime: true,
           dateFormat: 'd/m/y H:i',
-          defaultDate: this._state.dateTo,
-          minDate: this._state.dateFrom,
-          onChange: this.#pointDateToChangeHandler,
+          defaultDate: '',
+          onClose: this.#pointDateToChangeHandler,
         },
       );
     }
@@ -192,10 +193,7 @@ export default class EditingFormView extends AbstractStatefulView{
     this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
-
   static parsePointToState = (point) => ({...point,
-    dateTo: dayjs(point.dateTo).toDate(),
-    dateFrom: dayjs(point.dateFrom).toDate(),
     isDisabled: false,
     isSaving: false,
     isDeleting: false

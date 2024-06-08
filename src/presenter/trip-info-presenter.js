@@ -2,7 +2,7 @@ import { render, remove } from '../framework/render.js';
 import TripInfoView from '../view/trip-info.js';
 
 
-export default class TripNameView {
+export default class TripInfoPresenter {
   #points;
   #offers;
   #destinations;
@@ -22,7 +22,7 @@ export default class TripNameView {
     this.#destinations = [...this.#destinationsModel.destinations];
     this.#offers = [...this.#offersModel.offers];
     this.#tripInfoComponent = new TripInfoView(this.#points, this.#destinations, this.#offers);
-    render(this.#tripInfoComponent, this.#tripInfoContainer);
+    if (this.#points.length > 0){render(this.#tripInfoComponent, this.#tripInfoContainer);}
   };
 
   destroy = () => {

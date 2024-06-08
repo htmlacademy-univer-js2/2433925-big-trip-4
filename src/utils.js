@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 import { FilterType, DURATION, SortType } from './const';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 function getRandomNumber(min, max) {
   const lower = Math.ceil(Math.min(max, min));
@@ -28,7 +31,7 @@ function getFullDate(date) {
   return date ? dayjs(date).format('DD/MM/YY HH:mm') : '';
 }
 
-function getHourseAndMinutes(date) {
+function getHoursAndMinutes(date) {
   return date ? dayjs(date).format('HH:mm') : '';
 }
 
@@ -37,21 +40,23 @@ function getDay(date) {
 }
 
 function getTripDuration(startDate, finishDate) {
-  const MSEC_IN_MINUTE = 60000;
-  const MSEC_IN_HOUR = 3600000;
-  const MSEC_IN_FIVE_HOURS = 18000000;
-  const MSEC_IN_24_HOURS = 86400000;
-  const MIN_IN_HOUR = 60;
-  const HOURS_IN_DAY = 24;
-  let timeDiff = dayjs(finishDate).diff(dayjs(startDate));
-  if (timeDiff / MSEC_IN_MINUTE < MIN_IN_HOUR) {
-    return dayjs(timeDiff).format('m[M]');
-  } else if (timeDiff / MSEC_IN_HOUR < HOURS_IN_DAY) {
-    timeDiff -= MSEC_IN_FIVE_HOURS;
-    return dayjs(timeDiff).format('H[H] m[M]');
+  const timeDifference = dayjs.duration(dayjs(finishDate).diff(dayjs(startDate)));
+  const timeDifferenceInMinutes = timeDifference.asMinutes();
+  const timeDifferenceInHours = timeDifference.asHours();
+  const timeDifferenceInDays = timeDifference.asDays();
+
+  if (timeDifferenceInHours < 1) {
+    const minutes = Math.floor(timeDifferenceInMinutes);
+    return `${minutes / 10 < 1 ? '0' : ''}${minutes}M`;
+  } else if (timeDifferenceInDays < 1) {
+    const hours = Math.floor(timeDifferenceInHours);
+    const minutes = Math.floor(timeDifferenceInMinutes % 60);
+    return `${hours / 10 < 1 ? '0' : ''}${hours}H ${minutes / 10 < 1 ? '0' : ''}${minutes}M`;
   } else {
-    timeDiff -= (MSEC_IN_FIVE_HOURS + MSEC_IN_24_HOURS);
-    return dayjs(timeDiff).format('D[D] HH[H] m[M]');
+    const days = Math.floor(timeDifferenceInDays % 365);
+    const hours = Math.floor(timeDifferenceInHours % 24);
+    const minutes = Math.floor(timeDifferenceInMinutes % 60);
+    return `${days / 10 < 1 ? '0' : ''}${days}D ${hours / 10 < 1 ? '0' : ''}${hours}H ${minutes / 10 < 1 ? '0' : ''}${minutes}M`;
   }
 }
 
@@ -110,20 +115,20 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-const sortPricePoint = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
-const sortDayPoint = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+const sortPointsByDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 
-const sortTimePoint = (pointA, pointB) => {
+const sortPointsByTime = (pointA, pointB) => {
   const timePointA = dayjs(pointA.dateTo).diff(dayjs(pointA.dateFrom));
   const timePointB = dayjs(pointB.dateTo).diff(dayjs(pointB.dateFrom));
   return timePointB - timePointA;
 };
 
 const sorting = {
-  [SortType.DAY]: (points) => points.sort(sortDayPoint),
-  [SortType.TIME]: (points) => points.sort(sortTimePoint),
-  [SortType.PRICE]: (points) => points.sort(sortPricePoint)
+  [SortType.DAY]: (points) => points.sort(sortPointsByDay),
+  [SortType.TIME]: (points) => points.sort(sortPointsByTime),
+  [SortType.PRICE]: (points) => points.sort(sortPointsByPrice)
 };
 
 function toUpperCaseFirstLetter(value){
@@ -138,5 +143,5 @@ function toUpperCaseFirstLetter(value){
 
 export {
   isChecked, makeKebabCase, getRandomArrayElement, getRandomNumber, createIdGenerator, humanizeDate, getFullDate, sorting,
-  getHourseAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem, toUpperCaseFirstLetter
+  getHoursAndMinutes, getDay, getTripDuration, genRandomPicture, isPointFuture, isPointPresent, isPointPast, filter, getDate, updateItem, toUpperCaseFirstLetter
 };

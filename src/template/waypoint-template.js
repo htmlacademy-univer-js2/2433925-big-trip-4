@@ -20,7 +20,6 @@ function createWaypointTemplate(point, destinations, allOffers){
   const allPointTypeOffers = allOffers.find((offer) => offer.type === type);
   const eventDuration = getTripDuration(dateFrom, dateTo);
   const startDate = dateFrom !== null ? humanizeDate(dateFrom) : '';
-  const endDate = dateTo !== null ? humanizeDate(dateTo) : '';
   const destinationData = destinations.find((item) => item.id === destination);
   return (
     `<li class="trip-events__item">
@@ -32,9 +31,9 @@ function createWaypointTemplate(point, destinations, allOffers){
       <h3 class="event__title">${type} ${destinationData ? he.encode(destinationData.name) : ''}</h3>
       <div class="event__schedule">
         <p class="event__time">
-        <time class="event__start-time" datetime="${dateFrom}">${(startDate === endDate) ? dayjs(dateFrom).format('HH:mm') : startDate}</time>
+        <time class="event__start-time" datetime="${dateFrom}">${dayjs(dateFrom).format('HH:mm')}</time>
         &mdash;
-        <time class="event__end-time" datetime="${dateTo}">${(startDate === endDate) ? dayjs(dateTo).format('HH:mm') : endDate}</time>
+        <time class="event__end-time" datetime="${dateTo}">${dayjs(dateTo).format('HH:mm')}</time>
         </p>
         <p class="event__duration">${eventDuration}</p>
       </div>

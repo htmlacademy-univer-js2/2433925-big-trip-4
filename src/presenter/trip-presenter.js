@@ -42,8 +42,14 @@ export default class TripPresenter {
       pointListContainer: this.#pointListComponent.element,
       changeData: this.#handleViewAction,
       destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel
+      offersModel: this.#offersModel,
+      filterType: this.#filterType,
+      pointsModel: this.#pointsModel
     });
+    this.#addModelObservers();
+  }
+
+  #addModelObservers(){
     this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#offersModel.addObserver(this.#handleModelEvent);
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -86,6 +92,7 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     if (this.#noPointComponent) {
+      this.#clearBoard();
       render(this.#pointListComponent, this.#tripContainer);
     }
     this.#pointNewPresenter.init(callback);
@@ -97,6 +104,7 @@ export default class TripPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
@@ -211,7 +219,9 @@ export default class TripPresenter {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
-    remove(this.#sortComponent);
+    if (this.#sortComponent){
+      remove(this.#sortComponent);
+    }
 
     if (this.#noPointComponent) {
       remove(this.#noPointComponent);

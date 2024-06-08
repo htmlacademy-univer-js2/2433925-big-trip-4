@@ -1,8 +1,6 @@
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import NewPointButtonPresenter from './presenter/new-point-button-presenter.js';
-import MenuView from './view/menu.js';
-import { render } from './framework/render.js';
 import PointsModel from './models/point-model.js';
 import FilterModel from './models/filter-model.js';
 import OffersModel from './models/offer-model.js';
@@ -13,7 +11,6 @@ import OffersApiService from './api/offers-api.js';
 
 const AUTHORIZATION = 'Basic hetvcj3459msejf1';
 const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
-const menuContainer = document.querySelector('.trip-controls__navigation');
 const tripInfoContainer = document.querySelector('.trip-main__trip-info');
 const tripMain = document.querySelector('.trip-main');
 const tripEvents = document.querySelector('.trip-events');
@@ -48,4 +45,3 @@ offersModel.init().finally(() => {
     });
   });
 });
-render(new MenuView(), menuContainer);
